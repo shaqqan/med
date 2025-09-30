@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Avatar,
   Button,
@@ -8,6 +8,7 @@ import {
   theme,
   Typography,
   Dropdown,
+  Grid,
 } from "antd";
 import { Outlet, useNavigate } from "react-router";
 import {
@@ -24,13 +25,22 @@ import {
 
 const { Text } = Typography;
 const { Header, Sider, Content } = Layout;
+const { useBreakpoint } = Grid;
 
 const MainLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const screens = useBreakpoint(); // 📱 breakpoint hook
   const navigate = useNavigate();
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+
+  // 📱 ekran kichkina bo‘lsa (sm yoki md dan kichik), avtomatik collapse qilamiz
+  useEffect(() => {
+    if (!screens.md) {
+      setCollapsed(true);
+    }
+  }, [screens]);
 
   const handleUserMenuClick = ({ key }: { key: string }) => {
     switch (key) {
@@ -78,6 +88,7 @@ const MainLayout: React.FC = () => {
         collapsible
         collapsed={collapsed}
         width={260}
+        collapsedWidth={screens.xs ? 0 : 80} // 📱 telefon uchun butunlay yopiladi
         style={{ background: colorBgContainer }}
       >
         <Flex
@@ -126,6 +137,7 @@ const MainLayout: React.FC = () => {
             </div>
           )}
         </Flex>
+
         <Menu
           theme="light"
           mode="inline"
@@ -193,6 +205,8 @@ const MainLayout: React.FC = () => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            flexWrap: "wrap", // 📱 telefon uchun yangi qatordan tushishi mumkin
+            gap: 8,
           }}
         >
           <Button
@@ -201,62 +215,42 @@ const MainLayout: React.FC = () => {
             onClick={() => setCollapsed(!collapsed)}
             style={{
               fontSize: "16px",
-              width: 64,
-              height: 64,
+              width: 48,
+              height: 48,
             }}
           />
 
-          <div style={{ display: "flex", gap: 16 }}>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center", // vertical markazlashuv
-              }}
-            >
-              <Text style={{ fontSize: 16, lineHeight: 2 }}>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <Text style={{ fontSize: 14, fontWeight: 500 }}>
                 MUXIYATDINOV NURATDIN SADRATDIN ULI
               </Text>
-              <Text
-                type="secondary"
-                style={{
-                  fontSize: 12,
-                  lineHeight: 1,
-                  textAlign: "end",
-                }}
-              >
+              <Text type="secondary" style={{ fontSize: 12 }}>
                 Тест клиника U-Study
               </Text>
             </div>
             <Dropdown
-              menu={{
-                items: userMenuItems,
-                onClick: handleUserMenuClick,
-              }}
+              menu={{ items: userMenuItems, onClick: handleUserMenuClick }}
               placement="bottomRight"
               trigger={["click", "hover"]}
-              mouseEnterDelay={0.2}
-              mouseLeaveDelay={0.1}
               arrow
             >
               <Avatar
                 src="https://i.ibb.co/WY5x369/2.png"
                 alt="user"
                 style={{
-                  display: "block",
                   width: 40,
                   height: 40,
-                  borderRadius: "50%",
                   cursor: "pointer",
-                  transition: "all 0.3s ease",
                 }}
               />
             </Dropdown>
           </div>
         </Header>
+
         <Content
           style={{
-            padding: 24,
+            padding: 16,
             minHeight: 280,
           }}
         >
