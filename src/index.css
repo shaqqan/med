@@ -1,0 +1,14 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.ant-layout-sider-collapsed .ant-menu-inline-collapsed .ant-menu-item {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.ant-layout-sider-collapsed .ant-menu-inline-collapsed .ant-menu-item-icon {
+  margin: 0 !important;
+}
